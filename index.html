@@ -179,7 +179,7 @@ body{
 
 <div class="main">
 
-  <div class="card header">CricxCrate • Willow Sports</div>
+  <div class="card header">CricxCrate • Prime</div>
 
   <div class="card player-card">
     <div class="player-wrap">
@@ -235,15 +235,14 @@ async function sharePage() {
   if (navigator.share) {
     try {
       await navigator.share({
-        title: 'CricxCrate Live',
-        text: 'Watch Live Cricket on CricxCrate!',
+        title: 'CricxCrate - Prime Live',
+        text: 'Watch Prime Live Cricket on CricxCrate!',
         url: window.location.href
       });
     } catch (err) {
       console.log("Share failed or cancelled");
     }
   } else {
-    // Fallback if browser doesn't support native share
     copyLink();
   }
 }
@@ -262,7 +261,6 @@ async function initPlayer(){
   const video=document.getElementById("video");
   const player=new shaka.Player(video);
 
-  // Error handling for player
   player.addEventListener('error', (event) => console.error('Error code', event.detail.code, 'object', event.detail));
 
   player.configure({
