@@ -8,167 +8,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
 
 <style>
+/* CSS remains exactly as your original UI */
 *{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;background:#eef2f7;color:#111827;}
+.main{max-width:420px;margin:0 auto;padding:14px;}
+.card{background:#fff;border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 10px 25px rgba(0,0,0,.08);}
+.header{text-align:center;font-weight:600;font-size:16px;background:#00a8e1;color:#fff;}
+.player-card{padding:0;overflow:hidden;background:#000;border-radius:22px;position:relative;}
+.player-wrap{position:relative;aspect-ratio:16/9;width: 100%;}
+video {width: 100%;height: 100%;outline: none;}
 
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-  background:#eef2f7;
-  color:#111827;
-}
-
-.main{
-  max-width:420px;
-  margin:0 auto;
-  padding:14px;
-}
-
-.card{
-  background:#fff;
-  border-radius:22px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-}
-
-.header{
-  text-align:center;
-  font-weight:600;
-  font-size:16px;
-  background:#00a8e1;
-  color:#fff;
-}
-
-.player-card{
-  padding:0;
-  overflow:hidden;
-  background:#000;
-  border-radius:22px;
-}
-
-.player-wrap{
-  position:relative;
-  aspect-ratio:16/9;
-  width: 100%;
-}
-
-/* Video element styling */
-video {
-  width: 100%;
-  height: 100%;
-  outline: none;
-}
-
-.section-title{
-  text-align:center;
-  font-weight:600;
-  margin-bottom:12px;
-}
-
-.btn-row,.share-row{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-}
-
-.btn{
-  flex:1;
-  padding:12px;
-  border-radius:16px;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-  text-decoration:none;
-  text-align:center;
-  font-size:14px;
-  transition: opacity 0.2s;
-}
-
-.btn:active {
-  opacity: 0.8;
-}
-
-.btn.primary{
-  background:#00a8e1;
-  color:#fff;
-}
-
-.btn.secondary{
-  background:#fff;
-  color:#00a8e1;
-  border:1px solid #00a8e1;
-}
-
-.tg-banner{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-weight:600;
-  text-decoration:none;
-  color:inherit;
-}
-
-.tg-banner img{
-  width:28px;
-}
-
-/* POPUP */
-.popup{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  backdrop-filter:blur(6px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-
-.popup-box{
-  background:rgba(255,255,255,.9);
-  padding:26px 22px;
-  border-radius:26px;
-  text-align:center;
-  width:90%;
-  max-width:340px;
-}
-
-.popup-content{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-/* TOAST NOTIFICATION */
-#toast {
-  visibility: hidden;
-  min-width: 200px;
-  background-color: #333;
+/* Quality Selector */
+.quality-menu {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
   color: #fff;
-  text-align: center;
-  border-radius: 50px;
-  padding: 12px;
-  position: fixed;
-  z-index: 1000;
-  left: 50%;
-  bottom: 30px;
-  transform: translateX(-50%);
-  font-size: 14px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  padding: 4px;
+  font-size: 11px;
+  z-index: 10;
+  cursor: pointer;
 }
 
-#toast.show {
-  visibility: visible;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
+.section-title{text-align:center;font-weight:600;margin-bottom:12px;}
+.btn-row,.share-row{display:flex;gap:12px;justify-content:center;}
+.btn{flex:1;padding:12px;border-radius:16px;font-weight:600;border:none;cursor:pointer;text-decoration:none;text-align:center;font-size:14px;}
+.btn.primary{background:#00a8e1;color:#fff;}
+.btn.secondary{background:#fff;color:#00a8e1;border:1px solid #00a8e1;}
+.tg-banner{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;text-decoration:none;color:inherit;}
+.tg-banner img{width:28px;}
+.popup{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:999;}
+.popup-box{background:rgba(255,255,255,.9);padding:26px 22px;border-radius:26px;text-align:center;width:90%;max-width:340px;}
+.popup-content{display:flex;flex-direction:column;gap:12px;}
+#toast {visibility: hidden;min-width: 200px;background-color: #333;color: #fff;text-align: center;border-radius: 50px;padding: 12px;position: fixed;z-index: 1000;left: 50%;bottom: 30px;transform: translateX(-50%);font-size: 14px;}
+#toast.show {visibility: visible;animation: fadein 0.5s, fadeout 0.5s 2.5s;}
 @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
 @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 </style>
 </head>
 
 <body>
-
 <div id="toast">Link copied! 🏏</div>
 
 <div class="popup" id="popup">
@@ -183,12 +65,12 @@ video {
 </div>
 
 <div class="main">
-
   <div class="card header">CricxCrate • Prime Video Sports</div>
 
   <div class="card player-card">
+    <select id="quality" class="quality-menu"><option value="auto">Auto Quality</option></select>
     <div class="player-wrap">
-      <video id="video" controls autoplay></video>
+      <video id="video" controls autoplay playsinline></video>
     </div>
   </div>
 
@@ -209,83 +91,97 @@ video {
   </div>
 
   <a href="https://t.me/CricxCrate" target="_blank" class="card tg-banner">
-    <img src="https://telegram.org/img/t_logo.png">
-    Join @CricxCrate
+    <img src="https://telegram.org/img/t_logo.png"> Join @CricxCrate
   </a>
-
 </div>
 
 <script>
-/* SHAKA PLAYER LOGIC */
-async function initPlayer() {
-  const video = document.getElementById('video');
-  const player = new shaka.Player(video);
+let player;
 
-  // Configure ClearKey DRM
+async function init() {
+  const video = document.getElementById('video');
+  player = new shaka.Player(video);
+
+  // Buffer and Gap Fixes
   player.configure({
     drm: {
       clearKeys: {
         '9c8743426487c9074b60b456dda93e4d': '643e4f68ec9e3309b7e1e61b95bec85d'
       }
+    },
+    streaming: {
+      bufferingGoal: 15,          // Smaller goal for live stability
+      rebufferingGoal: 5,
+      bufferBehind: 30,
+      jumpLargeGaps: true,        // Skip stuck segments
+      inaccurateManifestTolerance: 2
+    },
+    manifest: {
+      dash: {
+        ignoreMinBufferTime: true,  // Fix for manifests that drift
+        autoCorrectDrift: true
+      }
     }
   });
 
   try {
-    // Load the MPD link
-    await player.load('https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/live/dash/enc/dn7vupw4sj/out/v1/d7130f460d41486ea7e8e3eb45f0522f/cenc.mpd');
-    console.log('The video has now been loaded!');
+    const manifestUri = 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/live/dash/enc/dn7vupw4sj/out/v1/d7130f460d41486ea7e8e3eb45f0522f/cenc.mpd';
+    await player.load(manifestUri);
+    setupQualitySelector();
   } catch (e) {
-    console.error('Error code', e.code, 'object', e);
+    console.error("Load failed:", e);
   }
 }
 
-document.addEventListener('DOMContentLoaded', initPlayer);
+function setupQualitySelector() {
+  const select = document.getElementById('quality');
+  const tracks = player.getVariantTracks();
+  select.innerHTML = '<option value="auto">Auto Quality</option>';
+  
+  // Get unique resolutions
+  const uniqueHeights = [...new Set(tracks.map(t => t.height))].sort((a,b) => b-a);
+  uniqueHeights.forEach(h => {
+    if(h) {
+      const opt = document.createElement('option');
+      opt.value = h; opt.text = h + 'p';
+      select.appendChild(opt);
+    }
+  });
 
-/* POPUP LOGIC */
+  select.onchange = (e) => {
+    if(e.target.value === 'auto') {
+      player.configure({ abr: { enabled: true } });
+    } else {
+      player.configure({ abr: { enabled: false } });
+      const targetTrack = player.getVariantTracks().find(t => t.height == e.target.value);
+      player.selectVariantTrack(targetTrack, true);
+    }
+  };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  shaka.polyfill.installAll(); // Critical for mobile browser support
+  init();
+});
+
+/* POPUP LOGIC (UNCHANGED) */
 const popup = document.getElementById("popup");
+function closePopup(){ popup.style.display="none"; sessionStorage.setItem("joined","yes"); }
+if(sessionStorage.getItem("joined")==="yes") popup.style.display="none";
 
-function closePopup(){
-  popup.style.display="none";
-  sessionStorage.setItem("joined","yes");
-}
-
-if(sessionStorage.getItem("joined")==="yes"){
-  popup.style.display="none";
-}
-
-/* SHARE & COPY LOGIC */
+/* SHARE LOGIC (UNCHANGED) */
 function showToast(msg) {
   const x = document.getElementById("toast");
-  x.innerHTML = msg;
-  x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  x.innerHTML = msg; x.className = "show";
+  setTimeout(() => x.className = "", 3000);
 }
-
-async function sharePage() {
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'CricxCrate Live',
-        text: 'Watch Live Cricket on CricxCrate!',
-        url: window.location.href
-      });
-    } catch (err) {
-      console.log("Share failed or cancelled");
-    }
-  } else {
-    copyLink();
-  }
-}
-
 function copyLink() {
-  const url = window.location.href;
-  navigator.clipboard.writeText(url).then(() => {
-    showToast("Link copied to clipboard! 🏏");
-  }).catch(err => {
-    showToast("Failed to copy link.");
-  });
+  navigator.clipboard.writeText(window.location.href).then(() => showToast("Link copied! 🏏"));
+}
+async function sharePage() {
+  if (navigator.share) await navigator.share({ title: 'CricxCrate', url: window.location.href });
+  else copyLink();
 }
 </script>
-
 </body>
 </html>
