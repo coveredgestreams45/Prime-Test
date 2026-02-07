@@ -2,163 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CricxCrate – Live Cricket</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CricxCrate – Prime Live</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.6.3/shaka-player.compiled.js"></script>
 
 <style>
 *{box-sizing:border-box}
+body{margin:0;font-family:Roboto,sans-serif;background:#eef2f7;color:#111827}
+.main{max-width:420px;margin:0 auto;padding:14px}
+.card{background:#fff;border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
+.header{text-align:center;font-weight:700;font-size:18px;color:#ff6b6b}
+.player-card{padding:0;overflow:hidden;background:#000;border-radius:22px;position:relative;border:2px solid #fff}
+.player-wrap{position:relative;aspect-ratio:16/9;background:#000}
+video{width:100%;height:100%;display:block;outline:none}
 
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-  background:#eef2f7;
-  color:#111827;
+/* Interaction Overlay */
+#play-overlay, #loading-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.85);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 10; cursor: pointer; color: #fff; text-align: center;
 }
-
-.main{
-  max-width:420px;
-  margin:0 auto;
-  padding:14px;
+#loading-overlay { display: none; pointer-events: none; }
+.spinner {
+  width: 40px; height: 40px; border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff6b6b; border-radius: 50%;
+  animation: spin 1s linear infinite; margin-bottom: 10px;
 }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.card{
-  background:#fff;
-  border-radius:22px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 10px 25px rgba(0,0,0,.08);
-}
+.section-title{text-align:center;font-weight:600;margin-bottom:12px; font-size: 14px}
+.btn-row{display:flex;gap:12px;justify-content:center}
+.btn{flex:1;padding:12px;border-radius:16px;font-weight:600;border:none;cursor:pointer;text-decoration:none;text-align:center;font-size:14px; transition: 0.2s}
+.btn:active { transform: scale(0.95); opacity: 0.9; }
+.btn.primary{background:#ff6b6b;color:#fff}
+.btn.secondary{background:#fff;color:#ff6b6b;border:1px solid #ffd1d1}
 
-.header{
-  text-align:center;
-  font-weight:600;
-  font-size:16px;
-}
-
-.player-card{
-  padding:0;
-  overflow:hidden;
-  background:#000;
-}
-
-.player-wrap{
-  position:relative;
-  aspect-ratio:16/9;
-}
-
-.player-wrap video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.section-title{
-  text-align:center;
-  font-weight:600;
-  margin-bottom:12px;
-}
-
-.btn-row,.share-row{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-}
-
-.btn{
-  flex:1;
-  padding:12px;
-  border-radius:16px;
-  font-weight:600;
-  border:none;
-  cursor:pointer;
-  text-decoration:none;
-  text-align:center;
-  font-size:14px;
-  transition: opacity 0.2s;
-}
-
-.btn:active {
-  opacity: 0.8;
-}
-
-.btn.primary{
-  background:#ff6b6b;
-  color:#fff;
-}
-
-.btn.secondary{
-  background:#fff;
-  color:#ff6b6b;
-  border:1px solid #ffd1d1;
-}
-
-.tg-banner{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  font-weight:600;
-  text-decoration:none;
-  color:inherit;
-}
-
-.tg-banner img{
-  width:28px;
-}
-
-/* POPUP */
-.popup{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  backdrop-filter:blur(6px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-
-.popup-box{
-  background:rgba(255,255,255,.9);
-  padding:26px 22px;
-  border-radius:26px;
-  text-align:center;
-  width:90%;
-  max-width:340px;
-}
-
-.popup-content{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-/* TOAST NOTIFICATION */
-#toast {
-  visibility: hidden;
-  min-width: 200px;
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  border-radius: 50px;
-  padding: 12px;
-  position: fixed;
-  z-index: 1000;
-  left: 50%;
-  bottom: 30px;
-  transform: translateX(-50%);
-  font-size: 14px;
-}
-
-#toast.show {
-  visibility: visible;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-@keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-@keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+.tg-banner{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;text-decoration:none;color:inherit}
+#toast{visibility:hidden;min-width:200px;background:#333;color:#fff;text-align:center;border-radius:50px;padding:12px;position:fixed;left:50%;bottom:30px;transform:translateX(-50%); z-index: 100}
+#toast.show{visibility:visible}
 </style>
 </head>
 
@@ -166,24 +48,17 @@ body{
 
 <div id="toast">Link copied! 🏏</div>
 
-<div class="popup" id="popup">
-  <div class="popup-box">
-    <h2>Welcome 🤩</h2>
-    <p>Join Telegram for live match updates</p>
-    <div class="popup-content">
-      <a class="btn primary" href="https://t.me/CricxCrate" target="_blank">Join @CricxCrate</a>
-      <button class="btn secondary" onclick="closePopup()">Already Joined</button>
-    </div>
-  </div>
-</div>
-
 <div class="main">
-
   <div class="card header">CricxCrate • Prime</div>
 
   <div class="card player-card">
+    <div id="loading-overlay"><div class="spinner"></div>Connecting to Prime...</div>
+    <div id="play-overlay" onclick="startVideo()">
+        <div style="font-size:50px; margin-bottom:10px;">▶</div>
+        <div>TAP TO WATCH PRIME LIVE</div>
+    </div>
     <div class="player-wrap">
-      <video id="video" controls autoplay muted playsinline></video>
+      <video id="video" controls playsinline></video>
     </div>
   </div>
 
@@ -197,92 +72,85 @@ body{
 
   <div class="card">
     <div class="section-title">❤️ Share & Support</div>
-    <div class="share-row">
+    <div class="btn-row">
       <button class="btn primary" onclick="sharePage()">Share</button>
       <button class="btn secondary" onclick="copyLink()">Copy Link</button>
     </div>
   </div>
 
   <a href="https://t.me/CricxCrate" target="_blank" class="card tg-banner">
-    <img src="https://telegram.org/img/t_logo.png">
+    <img src="https://telegram.org/img/t_logo.png" width="28">
     Join @CricxCrate
   </a>
-
 </div>
 
 <script>
-/* POPUP LOGIC */
-const popup = document.getElementById("popup");
+let player;
+let video;
 
-function closePopup(){
-  popup.style.display="none";
-  sessionStorage.setItem("joined","yes");
+async function initPlayer() {
+  video = document.getElementById('video');
+  shaka.polyfill.installAll(); 
+
+  player = new shaka.Player(video);
+
+  // CONFIGURE PRIME CLEARKEY DRM
+  player.configure({
+    drm: {
+      clearKeys: {
+        "9c8743426487c9074b60b456dda93e4d": "643e4f68ec9e3309b7e1e61b95bec85d"
+      }
+    },
+    streaming: {
+      jumpLargeGaps: true,
+      lowLatencyMode: true
+    }
+  });
+
+  player.addEventListener('error', (e) => {
+    console.error('Error Code:', e.detail.code);
+    if(e.detail.code === 4001) showToast("Stream blocked or expired");
+  });
 }
 
-if(sessionStorage.getItem("joined")==="yes"){
-  popup.style.display="none";
+async function startVideo() {
+  const playOverlay = document.getElementById('play-overlay');
+  const loadingOverlay = document.getElementById('loading-overlay');
+  
+  playOverlay.style.display = 'none';
+  loadingOverlay.style.display = 'flex';
+
+  try {
+    // NEW PRIME MPD URL
+    await player.load("https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/live/dash/enc/dn7vupw4sj/out/v1/d7130f460d41486ea7e8e3eb45f0522f/cenc.mpd");
+    await video.play();
+    loadingOverlay.style.display = 'none';
+  } catch (e) {
+    loadingOverlay.style.display = 'none';
+    playOverlay.style.display = 'flex';
+    showToast("Load Failed - Try again later");
+  }
 }
 
-/* SHARE & COPY LOGIC */
 function showToast(msg) {
   const x = document.getElementById("toast");
-  x.innerHTML = msg;
-  x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  x.innerText = msg; x.className = "show";
+  setTimeout(() => { x.className = ""; }, 3000);
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href);
+  showToast("Link Copied! 🏏");
 }
 
 async function sharePage() {
   if (navigator.share) {
-    try {
-      await navigator.share({
-        title: 'CricxCrate - Prime Live',
-        text: 'Watch Prime Live Cricket on CricxCrate!',
-        url: window.location.href
-      });
-    } catch (err) {
-      console.log("Share failed or cancelled");
-    }
-  } else {
-    copyLink();
-  }
+    navigator.share({ title: 'Watch Prime Live on CricxCrate', url: window.location.href });
+  } else { copyLink(); }
 }
 
-function copyLink() {
-  const url = window.location.href;
-  navigator.clipboard.writeText(url).then(() => {
-    showToast("Link copied to clipboard! 🏏");
-  }).catch(err => {
-    showToast("Failed to copy link.");
-  });
-}
-
-/* SHAKA PLAYER */
-async function initPlayer(){
-  const video=document.getElementById("video");
-  const player=new shaka.Player(video);
-
-  player.addEventListener('error', (event) => console.error('Error code', event.detail.code, 'object', event.detail));
-
-  player.configure({
-   drm:{
-     clearKeys:{
-        "f159241d40e659d58e81bc17ca30da31":"6b7fe24f7a16343bd447b0b30f68b7b2"
-        }
-    }
-  });
-
-  try{
-    await player.load(
-      "https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/clients/dash/enc/att545vfjr/out/v1/450d606c6a17471f84d09372f55004e2/cenc.mpd"
-    );
-    console.log("Stream loaded successfully");
-  }catch(e){
-    console.error("Stream failed to load", e);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", initPlayer);
+document.addEventListener('DOMContentLoaded', initPlayer);
 </script>
-
 </body>
 </html>
+
