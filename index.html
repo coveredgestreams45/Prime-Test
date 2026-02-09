@@ -1,187 +1,224 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CricxCrate – Prime Video Live</title>
+<title>CricxCrate – Prime English Live</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.3.5/shaka-player.compiled.js"></script>
-
 <style>
-/* CSS remains exactly as your original UI */
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;background:#eef2f7;color:#111827;}
-.main{max-width:420px;margin:0 auto;padding:14px;}
-.card{background:#fff;border-radius:22px;padding:16px;margin-bottom:16px;box-shadow:0 10px 25px rgba(0,0,0,.08);}
-.header{text-align:center;font-weight:600;font-size:16px;background:#00a8e1;color:#fff;}
-.player-card{padding:0;overflow:hidden;background:#000;border-radius:22px;position:relative;}
-.player-wrap{position:relative;aspect-ratio:16/9;width: 100%;}
-video {width: 100%;height: 100%;outline: none;}
-
-/* Quality Selector */
-.quality-menu {
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+  background:linear-gradient(180deg,#f8fafc,#eef2f7);
+  color:#111827;
+  user-select:none;
+}
+iframe{border:none}
+body.popup-active .main-content > :not(.player-wrap){
+  filter:blur(6px);
+  pointer-events:none;
+}
+.glass{
+  background:rgba(255,255,255,.72);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.45);
+  box-shadow:0 12px 30px rgba(0,0,0,.08);
+}
+.top-bar{
+  max-width:950px;
+  margin:14px auto;
+  padding:14px;
+  text-align:center;
+  font-weight:600;
+  border-radius:18px;
+}
+.player-wrap{
+  max-width:950px;
+  margin:0 auto;
+  background:#000;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 14px 30px rgba(0,0,0,.15);
+  position: relative;
+  aspect-ratio: 16/9;
+}
+.player-wrap iframe{
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  border: 1px solid #fff;
-  border-radius: 8px;
-  padding: 4px;
-  font-size: 11px;
-  z-index: 10;
-  cursor: pointer;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.section-title{text-align:center;font-weight:600;margin-bottom:12px;}
-.btn-row,.share-row{display:flex;gap:12px;justify-content:center;}
-.btn{flex:1;padding:12px;border-radius:16px;font-weight:600;border:none;cursor:pointer;text-decoration:none;text-align:center;font-size:14px;}
-.btn.primary{background:#00a8e1;color:#fff;}
-.btn.secondary{background:#fff;color:#00a8e1;border:1px solid #00a8e1;}
-.tg-banner{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:600;text-decoration:none;color:inherit;}
-.tg-banner img{width:28px;}
-.popup{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;z-index:999;}
-.popup-box{background:rgba(255,255,255,.9);padding:26px 22px;border-radius:26px;text-align:center;width:90%;max-width:340px;}
-.popup-content{display:flex;flex-direction:column;gap:12px;}
-#toast {visibility: hidden;min-width: 200px;background-color: #333;color: #fff;text-align: center;border-radius: 50px;padding: 12px;position: fixed;z-index: 1000;left: 50%;bottom: 30px;transform: translateX(-50%);font-size: 14px;}
-#toast.show {visibility: visible;animation: fadein 0.5s, fadeout 0.5s 2.5s;}
-@keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-@keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+.section{
+  max-width:950px;
+  margin:14px auto;
+  padding:18px;
+  border-radius:20px;
+  display:flex;
+  gap:14px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.section h3{
+  width:100%;
+  text-align:center;
+  margin:0 0 6px;
+  font-size:16px;
+  font-weight:600;
+}
+.btn{
+  background:rgba(255,255,255,.9);
+  color:#00a8e1;
+  padding:12px 22px;
+  border-radius:16px;
+  font-weight:600;
+  border:1px solid rgba(0,0,0,.08);
+  cursor:pointer;
+  text-decoration:none;
+  box-shadow:0 6px 14px rgba(0,0,0,.08);
+}
+.btn.primary{
+  background:#00a8e1;
+  color:#fff;
+  border:none;
+}
+.btn:active,
+.popup-box a:active,
+.popup-box button:active{
+  transform:scale(.96);
+}
+.banner{
+  max-width:950px;
+  margin:20px auto;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  font-size:20px;
+  font-weight:600;
+  border-radius:22px;
+}
+.banner img{width:36px}
+
+/* POPUP */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  backdrop-filter:blur(6px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+.popup-box{
+  background:rgba(255,255,255,.75);
+  backdrop-filter:blur(18px);
+  padding:28px 22px;
+  border-radius:26px;
+  text-align:center;
+  max-width:340px;
+  width:90%;
+  border:1px solid rgba(255,255,255,.5);
+  box-shadow:0 25px 50px rgba(0,0,0,.2);
+}
+.popup-box h2{margin:0 0 8px}
+.popup-box p{margin:0 0 18px;color:#6b7280}
+.popup-box a,
+.popup-box button{
+  display:block;
+  width:100%;
+  margin-top:12px;
+  padding:14px;
+  border-radius:16px;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  text-decoration:none;
+}
+.popup-join{background:#00a8e1;color:#fff}
+.popup-done{background:rgba(255,255,255,.9);color:#00a8e1}
 </style>
 </head>
 
-<body>
-<div id="toast">Link copied! 🏏</div>
+<body oncontextmenu="return false">
 
 <div class="popup" id="popup">
   <div class="popup-box">
     <h2>Welcome 🤩</h2>
     <p>Join Telegram for live match updates</p>
-    <div class="popup-content">
-      <a class="btn primary" href="https://t.me/CricxCrate" target="_blank">Join @CricxCrate</a>
-      <button class="btn secondary" onclick="closePopup()">Already Joined</button>
-    </div>
+    <a class="popup-join" href="Https://t.me/+t991_pRD-zs5NzY1" target="_blank">Join Channel</a>
+    <button class="popup-done" onclick="closePopup()">Already Joined</button>
   </div>
 </div>
 
-<div class="main">
-  <div class="card header">CricxCrate • Prime Video Sports</div>
+<div class="main-content">
+  <div class="top-bar glass">CricxCrate • Prime English</div>
 
-  <div class="card player-card">
-    <select id="quality" class="quality-menu"><option value="auto">Auto Quality</option></select>
-    <div class="player-wrap">
-      <video id="video" controls autoplay playsinline></video>
-    </div>
+  <div class="player-wrap">
+    <iframe 
+      src="https://cricketstan.github.io/Allrounder-/prame" 
+      allowfullscreen 
+      allow="autoplay; encrypted-media"
+      sandbox="allow-scripts allow-same-origin allow-forms"
+    ></iframe>
   </div>
 
-  <div class="card">
-    <div class="section-title">⚡️ Join Telegram For Live Updates</div>
-    <div class="btn-row">
-      <a class="btn primary" href="https://t.me/CricxCrate" target="_blank">Join Telegram</a>
-      <a class="btn secondary" href="https://t.me/CricxCratelinks" target="_blank">All Channels</a>
-    </div>
+  <div class="section glass">
+    <h3>⚡ Join Telegram For Live Updates</h3>
+    <a class="btn primary" href="Https://t.me/+t991_pRD-zs5NzY1" target="_blank">Join Telegram</a>
+    <a class="btn" href="https://t.me/CricxCratelinks" target="_blank">All Channels</a>
   </div>
 
-  <div class="card">
-    <div class="section-title">❤️ Share & Support</div>
-    <div class="share-row">
-      <button class="btn primary" onclick="sharePage()">Share</button>
-      <button class="btn secondary" onclick="copyLink()">Copy Link</button>
-    </div>
+  <div class="section glass">
+    <h3>❤️ Share & Support</h3>
+    <button class="btn primary" onclick="sharePage()">Share</button>
+    <button class="btn" onclick="copyLink()">Copy Link</button>
   </div>
 
-  <a href="https://t.me/CricxCrate" target="_blank" class="card tg-banner">
-    <img src="https://telegram.org/img/t_logo.png"> Join @CricxCrate
+  <a href="Https://t.me/+t991_pRD-zs5NzY1" target="_blank" style="text-decoration:none;color:inherit">
+    <div class="banner glass">
+      <img src="https://telegram.org/img/t_logo.png">
+      Join Channel
+    </div>
   </a>
 </div>
 
 <script>
-let player;
+fetch("https://dillzycounter.vercel.app/api/hit?key=prime-eng").catch(() => {});
 
-async function init() {
-  const video = document.getElementById('video');
-  player = new shaka.Player(video);
+const popup = document.getElementById("popup");
 
-  // Buffer and Gap Fixes
-  player.configure({
-    drm: {
-      clearKeys: {
-        '9c8743426487c9074b60b456dda93e4d': '643e4f68ec9e3309b7e1e61b95bec85d'
-      }
-    },
-    streaming: {
-      bufferingGoal: 15,          // Smaller goal for live stability
-      rebufferingGoal: 5,
-      bufferBehind: 30,
-      jumpLargeGaps: true,        // Skip stuck segments
-      inaccurateManifestTolerance: 2
-    },
-    manifest: {
-      dash: {
-        ignoreMinBufferTime: true,  // Fix for manifests that drift
-        autoCorrectDrift: true
-      }
-    }
-  });
+function copyLink(){
+  navigator.clipboard.writeText(location.href);
+  alert("Link copied!");
+}
 
-  try {
-    const manifestUri = 'https://a201aivottlinear-a.akamaihd.net/OTTB/lhr-nitro/live/dash/enc/dn7vupw4sj/out/v1/d7130f460d41486ea7e8e3eb45f0522f/cenc.mpd';
-    await player.load(manifestUri);
-    setupQualitySelector();
-  } catch (e) {
-    console.error("Load failed:", e);
+function sharePage(){
+  if(navigator.share){
+    navigator.share({title:"Prime English Live – CricxCrate", url:location.href});
   }
 }
 
-function setupQualitySelector() {
-  const select = document.getElementById('quality');
-  const tracks = player.getVariantTracks();
-  select.innerHTML = '<option value="auto">Auto Quality</option>';
-  
-  // Get unique resolutions
-  const uniqueHeights = [...new Set(tracks.map(t => t.height))].sort((a,b) => b-a);
-  uniqueHeights.forEach(h => {
-    if(h) {
-      const opt = document.createElement('option');
-      opt.value = h; opt.text = h + 'p';
-      select.appendChild(opt);
-    }
-  });
-
-  select.onchange = (e) => {
-    if(e.target.value === 'auto') {
-      player.configure({ abr: { enabled: true } });
-    } else {
-      player.configure({ abr: { enabled: false } });
-      const targetTrack = player.getVariantTracks().find(t => t.height == e.target.value);
-      player.selectVariantTrack(targetTrack, true);
-    }
-  };
+function closePopup(){
+  popup.style.opacity="0";
+  setTimeout(()=>{
+    popup.style.display="none";
+    document.body.classList.remove("popup-active");
+    sessionStorage.setItem("joined","yes");
+  },300);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  shaka.polyfill.installAll(); // Critical for mobile browser support
-  init();
-});
-
-/* POPUP LOGIC (UNCHANGED) */
-const popup = document.getElementById("popup");
-function closePopup(){ popup.style.display="none"; sessionStorage.setItem("joined","yes"); }
-if(sessionStorage.getItem("joined")==="yes") popup.style.display="none";
-
-/* SHARE LOGIC (UNCHANGED) */
-function showToast(msg) {
-  const x = document.getElementById("toast");
-  x.innerHTML = msg; x.className = "show";
-  setTimeout(() => x.className = "", 3000);
-}
-function copyLink() {
-  navigator.clipboard.writeText(window.location.href).then(() => showToast("Link copied! 🏏"));
-}
-async function sharePage() {
-  if (navigator.share) await navigator.share({ title: 'CricxCrate', url: window.location.href });
-  else copyLink();
+if(sessionStorage.getItem("joined")!=="yes"){
+  document.body.classList.add("popup-active");
+}else{
+  popup.style.display="none";
 }
 </script>
+
 </body>
 </html>
